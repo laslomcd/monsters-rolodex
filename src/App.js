@@ -1,4 +1,4 @@
-import {Component} from 'react'
+import { Component } from 'react'
 
 import './App.css';
 
@@ -9,7 +9,7 @@ class App extends Component {
 
         this.state = {
             monsters: [],
-            searchValue: ''
+            searchValue: '',
         }
     }
 
@@ -17,32 +17,36 @@ class App extends Component {
         fetch('https://jsonplaceholder.typicode.com/users')
             .then(response => response.json())
             .then(users => this.setState(() => {
-                return {monsters: users}
-            },
-                () => {
-                console.log(this.state)
-            }
-            ))
+                return { monsters: users }
+            }))
     }
 
     handleChange = (e) => {
-        this.setState({ searchValue: e.target.value })
+        const searchString = e.target.value.toLocaleLowerCase();
+        this.setState({ searchValue: searchString })
     }
-   
 
-  render() {
-      return (
-          <div className="App">
-              <input className='search-box' type='search' placeholder='search monsters' onChange={this.handleChange}/>
-              {this.state.monsters.map((monster) => {
-                  return (
-                      <h1 key={monster.id}>{monster.name}</h1>
-                  )
-              })}
-          </div>
-      );
-  }
-  
+
+    render() {
+
+        const { monsters, searchValue } = this.state;
+        const { handleChange } = this;
+        const filteredMonsters = monsters.filter((monster) => {
+            return monster.name.toLocaleLowerCase().includes(searchValue)
+        });
+
+        return (
+            <div className="App">
+                <input className='search-box' type='search' placeholder='search monsters' onChange={handleChange} />
+                {filteredMonsters.map((monster) => {
+                    return (
+                        <h1 key={monster.id}>{monster.name}</h1>
+                    )
+                })}
+            </div>
+        );
+    }
+
 }
 
 export default App;
